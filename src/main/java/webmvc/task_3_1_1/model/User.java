@@ -1,6 +1,9 @@
 package webmvc.task_3_1_1.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "users")
@@ -11,12 +14,17 @@ public class User {
     private Long id;
 
     @Column(name = "first_name")
+    @NotBlank
     private String firstName;
 
+
     @Column(name = "last_name")
+    @NotBlank
     private String lastName;
 
     @Column(name = "email")
+    @NotBlank
+    @Email
     private String email;
 
     public User() {}

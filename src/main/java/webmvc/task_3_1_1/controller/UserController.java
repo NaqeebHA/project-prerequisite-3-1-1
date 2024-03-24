@@ -1,14 +1,14 @@
 package webmvc.task_3_1_1.controller;
 
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import webmvc.task_3_1_1.model.User;
 import webmvc.task_3_1_1.service.UserService;
-
-import java.util.List;
 
 @Controller
 public class UserController {
@@ -19,13 +19,16 @@ public class UserController {
     @GetMapping("/")
     public String index(Model model) {
         model.addAttribute("userForm", new User());
-        List<User> userList= userService.getUserList();
-        model.addAttribute("users", userList);
+        model.addAttribute("users", userService.getUserList());
         return "users";
     }
 
     @PostMapping("/add")
-    public String addUser(@ModelAttribute User user, Model model) {
+    public String addUser(@Valid @ModelAttribute("userForm") User user, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("users", userService.getUserList());
+            return "users";
+        }
         userService.addUser(user);
         model.addAttribute("userForm", new User());
         model.addAttribute("users", userService.getUserList());
@@ -42,9 +45,14 @@ public class UserController {
     }
 
     @PostMapping("/edited")
-    public String postEditUser(@ModelAttribute User newUser, @RequestParam("id") Long id, Model model) {
+    public String postEditUser(@Valid @ModelAttribute("editUserForm") User newUser, BindingResult bindingResult, @RequestParam("id") @ModelAttribute Long id, Model model) throws Exception {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("id", id);
+            model.addAttribute("user", userService.getUserById(id));
+            return "edit";
+        }
         userService.updateUserById(id, newUser.getFirstName(), newUser.getLastName(), newUser.getEmail());
-        return "redirect:/";
+        return "redirect:/edit?id=" + id.toString();
     }
 
     @GetMapping("/delete")

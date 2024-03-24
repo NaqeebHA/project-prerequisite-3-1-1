@@ -12,7 +12,7 @@
     }
 
     td, th {
-        border: 1px solid #dddddd;
+        border: 1px solid #000;
         text-align: left;
         padding: 8px;
     }
@@ -20,21 +20,32 @@
     tr:nth-child(even) {
         background-color: #dddddd;
     }
+
+    .error {
+        color: red;
+    }
 </style>
 <body>
 
 <h1>Add User</h1>
 
 <form th:action="add" th:method="post" th:object="${userForm}">
-    <label for="firstName">First Name</label><br>
-    <input type="text" th:field="*{firstName}">
+    <div>
+        <label for="firstName">First Name</label><br>
+        <input type="text" placeholder="e.g. John" th:field="*{firstName}">
+        <p th:if="${#fields.hasErrors('firstName')}" th:errorclass="error" th:errors="*{firstName}"></p>
+    </div>
+    <div>
+        <label for="lastName">Last Name</label><br>
+        <input type="text" placeholder="e.g. Doe" th:field="*{lastName}">
+        <p th:if="${#fields.hasErrors('lastName')}" th:errorclass="error" th:errors="*{lastName}"></p>
+    </div>
+    <div>
+        <label for="email">Email</label><br>
+        <input type="email" placeholder="e.g. john_doe@mail.com" th:field="*{email}">
+        <p th:if="${#fields.hasErrors('email')}" th:errorclass="error" th:errors="*{email}"></p>
+    </div>
     <br>
-    <label for="lastName">Last Name</label><br>
-    <input type="text" th:field="*{lastName}">
-    <br>
-    <label for="email">Email</label><br>
-    <input type="email" th:field="*{email}">
-    <br><br>
     <button type="submit">Add User</button>
 </form>
 
@@ -45,8 +56,8 @@
     <thead>
     <tr>
         <th>ID</th>
-        <th>FirstName</th>
-        <th>LastName</th>
+        <th>First Name</th>
+        <th>Last Name</th>
         <th>Email</th>
         <th>Edit</th>
         <th>Delete</th>
